@@ -11,9 +11,9 @@ for ARGUMENT in "$@"; do
     --help|-h) printf 'Usage: install.sh [--with-t3]\n  --with-t3: install the official T3 Code CLI when a usable t3 command is missing.\n'; exit 0 ;;
     *) printf 'Unknown installer option: %s\n' "$ARGUMENT" >&2; exit 1 ;;
   esac
- done
+done
 [[ "$WITH_T3" == 0 || "$WITH_T3" == 1 ]] || { printf 'T3_TODE_INSTALL_T3 must be 0 or 1\n' >&2; exit 1; }
-T3_PATH='' 
+T3_PATH=''
 fail() { printf 't3-tode: %s\n' "$*" >&2; exit 1; }
 case "$VERSION" in v[0-9]*.[0-9]*.[0-9]*) ;; *) fail 'Invalid T3_TODE_VERSION' ;; esac
 [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?$ ]] || fail 'Invalid release version'
