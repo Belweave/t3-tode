@@ -15,6 +15,8 @@ test('installer handles spaces, atomically updates, and preserves installation o
     fs.writeFileSync(path.join(app,'bin','t3-tode.mjs'),'console.log("fixture doctor OK");');
     fs.mkdirSync(path.join(app,'node_modules','@zenbu-labs','pixel','scripts'),{recursive:true});
     fs.writeFileSync(path.join(app,'node_modules','@zenbu-labs','pixel','scripts','postinstall.mjs'),'// fixture runtime installation');
+    fs.mkdirSync(path.join(app,'scripts'));
+    fs.writeFileSync(path.join(app,'scripts','ensure-backend.mjs'),'// fixture backend installation');
     const asset='t3-tode-v0.1.0.tar.gz';
     execFileSync('tar',['-czf',path.join(downloads,asset),'-C',home,'t3-tode']);
     const nodeDir=path.join(home,'node-v24.21.0-darwin-arm64');fs.mkdirSync(path.join(nodeDir,'bin'),{recursive:true});

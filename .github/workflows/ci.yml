@@ -44,6 +44,7 @@ jobs:
           cache: npm
       - run: sudo apt-get update -qq && sudo apt-get install -y libasound2t64 libnss3 libgtk-3-0t64 libgbm1
       - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node scripts/ensure-backend.mjs
       - run: node node_modules/@zenbu-labs/pixel/scripts/postinstall.mjs
       - run: bash node_modules/@zenbu-labs/pixel/scripts/apparmor.sh "$PWD/node_modules/@zenbu-labs/pixel/electron/dist/pixel"
       - run: T3_TODE_SMOKE_SECONDS=45 T3_TODE_SMOKE_OWNED=1 python3 scripts/native-smoke.py 4785 /tmp/t3-tode-native-ci

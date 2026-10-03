@@ -77,6 +77,7 @@ printf 'Installing locked dependencies with %s…\n' "$MANAGER"
     bun) "$MANAGER_BIN" install --frozen-lockfile --production --ignore-scripts ;;
   esac
   # Run only the required, pinned Pixel runtime setup regardless of manager policy.
+  node scripts/ensure-backend.mjs
   node node_modules/@zenbu-labs/pixel/scripts/postinstall.mjs
 )
 if [[ "$PLATFORM" == linux ]]; then

@@ -1,0 +1,17 @@
+{
+  "darwin-arm64": {
+    "version": "0.0.45",
+    "url": "https://registry.npmjs.org/@t3code/t3-darwin-arm64/-/t3-darwin-arm64-0.0.45.tgz",
+    "integrity": "sha512-Q7Y3dYLKygpuIQd+6uPM83+EzSBcHOFOLa/EcVkynVgdToklVsnjZbbctgtkiZHyV7zJ4jJ/RUQalZABivfQsA=="
+  },
+  "linux-arm64": {
+    "version": "0.0.45",
+    "url": "https://registry.npmjs.org/@t3code/t3-linux-arm64/-/t3-linux-arm64-0.0.45.tgz",
+    "integrity": "sha512-/ZJpA+ZY2wi4INAy5G425lCrU3f7SWqtR1f4sNXtNiN61VHDERi3H1D67Xkk8mXdrqd5jFb1cSxjEtixVQWznw=="
+  },
+  "linux-x64": {
+    "version": "0.0.45",
+    "url": "https://registry.npmjs.org/@t3code/t3-linux-x64/-/t3-linux-x64-0.0.45.tgz",
+    "integrity": "sha512-9nXZm98W0uxNK1lAC1TG3LJDfWQMV5qTKcGgV4JtsK4wFjvjGIHLrdL8KDTbaFwvH6BKqw4+sDpeZD8x9rNNNQ=="
+  }
+}

@@ -10,7 +10,8 @@
     "start": "node bin/t3-tode.mjs",
     "test": "node --test test/*.test.mjs",
     "doctor": "node bin/t3-tode.mjs --doctor",
-    "release:pack": "node scripts/package-release.mjs"
+    "release:pack": "node scripts/package-release.mjs",
+    "postinstall": "node scripts/ensure-backend.mjs"
   },
   "dependencies": {
     "@zenbu-labs/pixel": "0.0.23",
@@ -27,7 +28,8 @@
     "README.md",
     "LICENSE",
     "CHANGELOG.md",
-    "THIRD_PARTY_NOTICES.md"
+    "THIRD_PARTY_NOTICES.md",
+    "scripts/ensure-backend.mjs"
   ],
   "repository": {
     "type": "git",
