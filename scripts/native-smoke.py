@@ -40,7 +40,12 @@ buffer=b''; chunks=b''; meta={}; frames=0; last=None; deadline=time.monotonic()+
 try:
     while time.monotonic()<deadline and proc.poll() is None:
         if not select.select([master],[],[],.1)[0]: continue
-        data=os.read(master,1024*1024); buffer+=data
+        try: data=os.read(master,1024*1024)
+        except OSError as error:
+            if error.errno == 5: break  # Linux PTY EOF when child exits.
+            raise
+        if not data: break
+        buffer+=data
         if b'\x1b[14t' in data: os.write(master,b'\x1b[4;1000;1600t')
         if b'\x1b[16t' in data: os.write(master,b'\x1b[6;20;10t')
         if b'\x1b[c' in data: os.write(master,b'\x1b[?1;2c')
@@ -69,7 +74,9 @@ try:
         end=buffer.rfind(b'\x1b\\')
         if end>=0: buffer=buffer[end+2:]
         elif len(buffer)>16*1024*1024: raise RuntimeError('Unbounded terminal frame')
-    if last is None: raise RuntimeError('No full Kitty graphics frame received')
+    if last is None:
+        detail=re.sub(r'([#?]token=)[^\s]+',r'\1[redacted]',buffer[-8000:].decode('utf8',errors='replace'))
+        raise RuntimeError('No full Kitty graphics frame received. Terminal output: '+detail)
     dest=root/'artifacts/native-terminal.png';dest.parent.mkdir(exist_ok=True);save_png(dest,*last)
     os.write(master,b'\x11')  # Ctrl+Q: exercise terminal input and graceful shutdown.
     quit_deadline=time.monotonic()+10

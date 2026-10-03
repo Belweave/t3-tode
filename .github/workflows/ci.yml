@@ -47,6 +47,12 @@ jobs:
       - run: node node_modules/@zenbu-labs/pixel/scripts/postinstall.mjs
       - run: bash node_modules/@zenbu-labs/pixel/scripts/apparmor.sh "$PWD/node_modules/@zenbu-labs/pixel/electron/dist/pixel"
       - run: T3_TODE_SMOKE_SECONDS=45 T3_TODE_SMOKE_OWNED=1 python3 scripts/native-smoke.py 4785 /tmp/t3-tode-native-ci
+      - name: Renderer diagnostics
+        if: failure()
+        run: |
+          for file in "$HOME"/.local/state/pixel/logs/*.stderr.log /tmp/t3-tode-native-ci/userdata/logs/t3-tode-backend.log; do
+            if [ -f "$file" ]; then tail -n 60 "$file"; fi
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
