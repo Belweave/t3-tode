@@ -68,6 +68,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
+          $env:T3CODE_VERSION = '0.0.45'
           $env:T3CODE_HOME = Join-Path $env:RUNNER_TEMP 't3-code-home'
           $env:T3CODE_INSTALL_BIN_DIR = Join-Path $env:RUNNER_TEMP 't3-code-bin'
           $tokens = $null; $errors = $null

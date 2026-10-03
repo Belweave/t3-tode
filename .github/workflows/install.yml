@@ -35,6 +35,7 @@ jobs:
         run: npm install --global bun@1.4.2
       - name: Install from the public release
         env:
+          T3CODE_VERSION: '0.0.45'
           T3_TODE_PACKAGE_MANAGER: ${{ matrix.manager }}
           T3_TODE_NODE_DOWNLOAD: ${{ matrix.private-node }}
         run: curl -fsSL https://github.com/Belweave/t3-tode/releases/latest/download/install.sh | bash -s -- --with-t3
