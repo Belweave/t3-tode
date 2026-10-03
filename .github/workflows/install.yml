@@ -37,7 +37,8 @@ jobs:
         env:
           T3_TODE_PACKAGE_MANAGER: ${{ matrix.manager }}
           T3_TODE_NODE_DOWNLOAD: ${{ matrix.private-node }}
-        run: curl -fsSL https://github.com/Belweave/t3-tode/releases/latest/download/install.sh | bash
+        run: curl -fsSL https://github.com/Belweave/t3-tode/releases/latest/download/install.sh | bash -s -- --with-t3
+      - run: ~/.local/bin/t3 --version
       - run: ~/.local/bin/t3-tode --version && ~/.local/bin/t3-tode --doctor
       - name: Check installed runtime
         run: |

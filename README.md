@@ -24,6 +24,21 @@ curl -fsSL https://github.com/Belweave/t3-tode/releases/latest/download/install.
 irm https://github.com/Belweave/t3-tode/releases/latest/download/install.ps1 | iex
 ```
 
+**Also install the official T3 Code CLI when needed:**
+
+```sh
+curl -fsSL https://github.com/Belweave/t3-tode/releases/latest/download/install.sh | bash -s -- --with-t3
+```
+
+```powershell
+$env:T3_TODE_INSTALL_T3 = '1'
+irm https://github.com/Belweave/t3-tode/releases/latest/download/install.ps1 | iex
+```
+
+The optional `--with-t3` / `T3_TODE_INSTALL_T3=1` path reuses a working `t3` command. Otherwise it runs T3's official installer from `https://t3.codes/install.sh` on macOS/Linux or `https://t3.codes/install.ps1` on Windows. This installs the upstream standalone CLI/backend, not the graphical desktop app or coding-provider credentials. T3's `T3CODE_CHANNEL`, `T3CODE_VERSION`, and installation-path options are honored by its installer.
+
+On Windows, this option installs the native Windows T3 CLI and also enables official T3 installation inside WSL when needed, because t3-tode renders and uses its backend there. Those environments keep separate data and authentication. Without the option, t3-tode continues to include its pinned backend for fresh environments.
+
 Then open a new compatible terminal and run:
 
 ```sh
@@ -109,7 +124,7 @@ Rerun the install command to update. It retains prior application versions and l
 
 ```sh
 # Pin a release; these variables are passed to bash, not curl.
-curl -fsSL https://github.com/Belweave/t3-tode/releases/latest/download/install.sh | T3_TODE_VERSION=v0.1.2 bash
+curl -fsSL https://github.com/Belweave/t3-tode/releases/latest/download/install.sh | T3_TODE_VERSION=v0.1.3 bash
 ```
 
 Choose your package manager explicitly (auto-detection prefers an existing npm, then pnpm, then Bun):

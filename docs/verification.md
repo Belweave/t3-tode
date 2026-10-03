@@ -19,3 +19,7 @@ These checks do not exhaustively exercise every upstream feature, provider, appr
 The native PTY harness exercises direct pixel transport without filesystem/shared-memory assumptions. A real network SSH session and a Windows/WSL installation have not been exercised end to end. macOS Intel and Linux arm64 have not been tested locally. WSL is a Linux route, not native Windows support.
 
 Screenshots and runtime state used during tests are not included in public release archives. Generated native frames live under ignored `artifacts/`, or as CI artifacts from synthetic environments.
+
+## Official T3 installation option
+
+Installer fixtures cover explicit opt-in, default omission, skipping a working CLI, official installer failure without replacing the current app, and persistent discovery of a custom T3 bin directory. The actual upstream Unix installer was exercised on macOS with isolated T3 home/bin directories, and its installed CLI responds to `--version`. CI additionally exercises the real native Windows PowerShell installer function and checks that a second invocation reuses its installed CLI. The published installer matrix enables `--with-t3` on macOS and Linux. Full WSL rendering remains outside the end-to-end checks.

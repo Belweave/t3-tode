@@ -33,7 +33,7 @@ test('installer handles spaces, atomically updates, and preserves installation o
     for (const manager of ['npm','pnpm','bun']) fs.writeFileSync(path.join(mocks,manager),'#!/bin/sh\nprintf "%s\\n" "$0 $*" >> "$FIXTURE_MANAGER_LOG"\nexit 0\n',{mode:0o755});
     const install=path.join(home,'app with spaces');const bin=path.join(home,'bin with spaces');
     const env={...process.env,HOME:home,PATH:`${mocks}:${process.env.PATH}`,FIXTURE_DOWNLOADS:downloads,T3_TODE_INSTALL_DIR:install,T3_TODE_BIN_DIR:bin,T3_TODE_VERSION:'v0.1.0',T3_TODE_PACKAGE_MANAGER:'npm',T3_TODE_NODE_DOWNLOAD:'1',FIXTURE_MANAGER_LOG:path.join(home,'manager.log')};
-    const run=()=>spawnSync('bash',['install.sh'],{env,encoding:'utf8'});
+    const run=(args=[])=>spawnSync('bash',['install.sh',...args],{env,encoding:'utf8'});
     let result=run();assert.equal(result.status,0,result.stderr);
     const first=fs.readlinkSync(path.join(install,'current'));
     assert.match(execFileSync(path.join(bin,'t3-tode'),['--doctor'],{encoding:'utf8'}),/fixture doctor OK/);
@@ -46,6 +46,34 @@ test('installer handles spaces, atomically updates, and preserves installation o
       assert.match(result.stdout,/Reusing Node/);
       assert.match(fs.readFileSync(env.FIXTURE_MANAGER_LOG,'utf8'),new RegExp(manager+' .*install'));
     }
+    // A broken/missing T3 CLI invokes the official installer only when opted in.
+    fs.writeFileSync(path.join(mocks,'t3'),'#!/bin/sh\nexit 1\n',{mode:0o755});
+    const officialBin=path.join(home,'official t3 bin');
+    env.T3CODE_INSTALL_BIN_DIR=officialBin;
+    env.FIXTURE_T3_LOG=path.join(home,'t3-install.log');
+    fs.writeFileSync(path.join(downloads,'install.sh'),`#!/bin/sh
+set -e
+printf 'installed\\n' >> "$FIXTURE_T3_LOG"
+mkdir -p "$T3CODE_INSTALL_BIN_DIR"
+printf '#!/bin/sh\\nprintf "t3 v0.0.45\\\\n"\\n' > "$T3CODE_INSTALL_BIN_DIR/t3"
+chmod 755 "$T3CODE_INSTALL_BIN_DIR/t3"
+`);
+    result=run();assert.equal(result.status,0,result.stderr);
+    assert.equal(fs.existsSync(env.FIXTURE_T3_LOG),false);
+    result=run(['--with-t3']);assert.equal(result.status,0,result.stderr);
+    assert.match(result.stdout,/Installing the official T3/);
+    assert.equal(fs.readFileSync(env.FIXTURE_T3_LOG,'utf8').trim(),'installed');
+    env.T3_TODE_INSTALL_T3='1';
+    result=run();assert.equal(result.status,0,result.stderr);
+    assert.match(result.stdout,/Reusing installed T3/);
+    assert.equal(fs.readFileSync(env.FIXTURE_T3_LOG,'utf8').trim(),'installed');
+    assert.match(fs.readFileSync(path.join(install,'env'),'utf8'),/official/);
+    fs.unlinkSync(path.join(officialBin,'t3'));
+    fs.writeFileSync(path.join(downloads,'install.sh'),'#!/bin/sh\nexit 7\n');
+    const priorFailure=fs.readlinkSync(path.join(install,'current'));
+    result=run();assert.equal(result.status,7);
+    assert.equal(fs.readlinkSync(path.join(install,'current')),priorFailure);
+    env.T3_TODE_INSTALL_T3='0';
     const before=fs.readlinkSync(path.join(install,'current'));
     fs.appendFileSync(path.join(downloads,asset),'tampered');
     result=run();assert.notEqual(result.status,0);assert.match(result.stderr,/checksum verification failed/);

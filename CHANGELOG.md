@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3
+
+- Add `--with-t3` / `T3_TODE_INSTALL_T3=1` to install the official upstream T3 CLI when missing.
+- Reuse working T3 installations and preserve upstream installer channel/version/path options.
+- Windows opt-in invokes the official PowerShell installer and enables the Linux installer in WSL.
+
 ## 0.1.2
 
 - Host shell and PowerShell bootstraps as tagged release assets, avoiding stale raw-branch installer caches.

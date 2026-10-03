@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
 # t3-tode user-local installer. No changes to T3 Code data or provider credentials.
 set -euo pipefail
-VERSION="${T3_TODE_VERSION:-v0.1.2}"
+VERSION="${T3_TODE_VERSION:-v0.1.3}"
 NODE_VERSION="v24.21.0"
 REPOSITORY="Belweave/t3-tode"
+WITH_T3="${T3_TODE_INSTALL_T3:-0}"
+for ARGUMENT in "$@"; do
+  case "$ARGUMENT" in
+    --with-t3) WITH_T3=1 ;;
+    --help|-h) printf 'Usage: install.sh [--with-t3]\n  --with-t3: install the official T3 Code CLI when a usable t3 command is missing.\n'; exit 0 ;;
+    *) printf 'Unknown installer option: %s\n' "$ARGUMENT" >&2; exit 1 ;;
+  esac
+ done
+[[ "$WITH_T3" == 0 || "$WITH_T3" == 1 ]] || { printf 'T3_TODE_INSTALL_T3 must be 0 or 1\n' >&2; exit 1; }
+T3_PATH='' 
 fail() { printf 't3-tode: %s\n' "$*" >&2; exit 1; }
 case "$VERSION" in v[0-9]*.[0-9]*.[0-9]*) ;; *) fail 'Invalid T3_TODE_VERSION' ;; esac
 [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?$ ]] || fail 'Invalid release version'
@@ -30,6 +40,22 @@ BIN_DIR="${T3_TODE_BIN_DIR:-$HOME/.local/bin}"
 mkdir -p "$INSTALL_ROOT/releases" "$BIN_DIR"
 WORK=$(mktemp -d "$INSTALL_ROOT/releases/.install-XXXXXX")
 trap 'rm -rf "$WORK"' EXIT
+if [[ "$WITH_T3" == 1 ]]; then
+  T3_BIN="${T3CODE_INSTALL_BIN_DIR:-$HOME/.local/bin}"
+  [[ "$T3_BIN" == /* ]] || fail 'T3CODE_INSTALL_BIN_DIR must be an absolute path'
+  t3_ready() { command -v t3 >/dev/null && t3 --version >/dev/null 2>&1; }
+  if ! t3_ready; then export PATH="$T3_BIN:$PATH"; fi
+  if t3_ready; then
+    printf 'Reusing installed T3 Code: %s\n' "$(command -v t3)"
+  else
+    printf 'Installing the official T3 Code CLI…\n'
+    fetch 'https://t3.codes/install.sh' "$WORK/install-t3.sh"
+    sh "$WORK/install-t3.sh"
+    export PATH="$T3_BIN:$PATH"
+    t3_ready || fail 'The official T3 installer completed, but t3 --version failed'
+  fi
+  T3_PATH=$(dirname "$(command -v t3)")
+fi
 ASSET="t3-tode-${VERSION}.tar.gz"
 RELEASE_URL="https://github.com/$REPOSITORY/releases/download/$VERSION"
 printf 'Installing t3-tode %s for %s-%s…\n' "$VERSION" "$PLATFORM" "$ARCH"
@@ -110,7 +136,7 @@ mv -f "$LAUNCHER" "$BIN_DIR/t3-tode"
 # Persist PATH for common login and interactive shells, without duplicating entries.
 # PATH expands when the shell sources this file.
 # shellcheck disable=SC2016
-printf 'export PATH=%q:"$PATH"\n' "$BIN_DIR" > "$INSTALL_ROOT/env"
+printf 'export PATH=%q:"$PATH"\n' "${BIN_DIR}${T3_PATH:+:$T3_PATH}" > "$INSTALL_ROOT/env"
 printf -v SOURCE_LINE '. %q/env # t3-tode PATH' "$INSTALL_ROOT"
 if [[ "${T3_TODE_NO_MODIFY_PATH:-0}" != 1 ]]; then
   for PROFILE in "$HOME/.profile" "$HOME/.bashrc" "$HOME/.zshrc"; do
