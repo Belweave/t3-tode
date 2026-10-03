@@ -2,14 +2,15 @@
 
 ## v0.1.0
 
-- Automated tests cover startup failure, timeout, occupied ports, interruption, credential redaction, process-group escalation, descendant cleanup, bounded logs, existing environment discovery, CLI mismatch refusal, exclusive profiles, SSH transport fixtures, and installer integrity/updates.
+- **34 automated tests pass on macOS and Linux.** Tests cover startup failure, timeout, occupied ports, interruption, credential redaction, process-group escalation, descendant cleanup, bounded logs, existing environment discovery, CLI mismatch refusal, exclusive profiles, SSH transport fixtures, and installer integrity/updates.
 - Installer fixtures test paths containing spaces, atomic replacement across repeated installs, idempotent PATH setup, checksum mismatch refusal, cleanup, and preservation of the previous installation.
 - Native macOS arm64 renderer exercised through a PTY using the actual launcher. Direct Kitty frames decoded at **1600 × 1000**. Ctrl+Q exits with code 0.
 - Owned backend checks cover startup, upstream pairing, rendering, clean quit, and released backend port.
 - Attached backend checks cover pairing, rendering, and leaving the original server running. An existing desktop nightly environment displayed existing conversations across its projects; no conversation database was copied or manually edited.
 - Persistent sessions were verified across launches. A live coding-provider response was previously verified through the official backend.
 - `npm audit --omit=dev` reported no known npm vulnerabilities during release preparation. This does not audit the complete downloaded Chromium/Node distributions.
-- CI runs unit/installer tests on macOS and Linux, installer syntax/lint checks, and a real headless Linux Pixel render through a PTY.
+- [Release CI](https://github.com/Belweave/t3-tode/actions/runs/37145621758) passed unit/installer tests on macOS and Linux, shell/PowerShell syntax checks, and a real headless Linux Pixel render through a PTY. Linux direct pixel frames rendered at 1600×1000 and Ctrl+Q exited cleanly.
+- Verified backend restoration handles npm skipping the upstream Linux archive because it bundles both libc variants. The official archive is restored only when missing, with its pinned SHA-512 integrity checked before extraction.
 
 ## Verification limits
 
