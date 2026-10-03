@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # t3-tode user-local installer. No changes to T3 Code data or provider credentials.
 set -euo pipefail
-VERSION="${T3_TODE_VERSION:-v0.1.1}"
+VERSION="${T3_TODE_VERSION:-v0.1.2}"
 NODE_VERSION="v24.21.0"
 REPOSITORY="Belweave/t3-tode"
 fail() { printf 't3-tode: %s\n' "$*" >&2; exit 1; }

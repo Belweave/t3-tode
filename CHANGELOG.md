@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- Host shell and PowerShell bootstraps as tagged release assets, avoiding stale raw-branch installer caches.
+- Include installer checksums with the application archive and verify the public release endpoints in CI.
+
 ## 0.1.1
 
 - Canonicalize the imported npm lock before Bun's frozen installation, fixing fresh Linux installs with Bun.

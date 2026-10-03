@@ -10,5 +10,6 @@ const asset=`t3-tode-v${version}.tar.gz`;
 const archive=execFileSync('git',['archive','--format=tar','--prefix=t3-tode/','HEAD'],{maxBuffer:32*1024*1024});
 const bytes=gzipSync(archive,{level:9});
 fs.writeFileSync(path.join('dist',asset),bytes);
-fs.writeFileSync('dist/SHA256SUMS',`${createHash('sha256').update(bytes).digest('hex')}  ${asset}\n`);
+for (const name of ['install.sh','install.ps1']) fs.copyFileSync(name,path.join('dist',name));
+fs.writeFileSync('dist/SHA256SUMS',[asset,'install.sh','install.ps1'].map(name=>`${createHash('sha256').update(fs.readFileSync(path.join('dist',name))).digest('hex')}  ${name}`).join('\n')+'\n');
 console.log(`dist/${asset}\ndist/SHA256SUMS`);

@@ -31,7 +31,7 @@ Describe the user-visible problem, final behavior, and relevant checks. Include 
 1. Update the version in `package.json`, the lockfile, and the default release in `install.sh`; update `CHANGELOG.md`.
 2. Run CI, native smoke checks, and installer fixtures. Verify pinned runtime downloads still exist.
 3. Commit and tag `v<version>`. Run `npm run release:pack` from a clean checkout.
-4. Publish the archive and `SHA256SUMS` as GitHub release assets. Keep the tag immutable.
+4. Publish the archive, `install.sh`, `install.ps1`, and `SHA256SUMS` as GitHub release assets. Keep the tag immutable.
 5. Verify the public installation commands on macOS and Linux and the PowerShell syntax/WSL route. Document any untested platforms accurately.
 
 The installer downloads a pinned tagged archive, verifies SHA-256 checksums over HTTPS, reuses compatible Node and installed npm/pnpm/Bun, and installs dependencies from `package-lock.json`. It is not signed or notarized by Belweave; Pixel provides the underlying patched Chromium runtime. Release archives exclude runtime downloads, vendor checkouts, generated artifacts, and user state.

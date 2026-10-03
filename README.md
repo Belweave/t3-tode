@@ -15,13 +15,13 @@ The actual T3 Code web interface rendered at your terminal's pixel resolution. E
 **macOS / Linux**
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Belweave/t3-tode/main/install.sh | bash
+curl -fsSL https://github.com/Belweave/t3-tode/releases/latest/download/install.sh | bash
 ```
 
 **Windows — installs inside your default WSL2 Linux distribution**
 
 ```powershell
-irm https://raw.githubusercontent.com/Belweave/t3-tode/main/install.ps1 | iex
+irm https://github.com/Belweave/t3-tode/releases/latest/download/install.ps1 | iex
 ```
 
 Then open a new compatible terminal and run:
@@ -109,13 +109,13 @@ Rerun the install command to update. It retains prior application versions and l
 
 ```sh
 # Pin a release; these variables are passed to bash, not curl.
-curl -fsSL https://raw.githubusercontent.com/Belweave/t3-tode/main/install.sh | T3_TODE_VERSION=v0.1.1 bash
+curl -fsSL https://github.com/Belweave/t3-tode/releases/latest/download/install.sh | T3_TODE_VERSION=v0.1.2 bash
 ```
 
 Choose your package manager explicitly (auto-detection prefers an existing npm, then pnpm, then Bun):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Belweave/t3-tode/main/install.sh | T3_TODE_PACKAGE_MANAGER=pnpm bash
+curl -fsSL https://github.com/Belweave/t3-tode/releases/latest/download/install.sh | T3_TODE_PACKAGE_MANAGER=pnpm bash
 # Or T3_TODE_PACKAGE_MANAGER=bun
 ```
 
