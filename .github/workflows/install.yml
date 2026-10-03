@@ -1,0 +1,44 @@
+name: Published installer
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            manager: npm
+            private-node: '0'
+          - os: ubuntu-24.04
+            manager: pnpm
+            private-node: '0'
+          - os: ubuntu-24.04
+            manager: bun
+            private-node: '0'
+          - os: ubuntu-24.04
+            manager: npm
+            private-node: '1'
+          - os: macos-14
+            manager: npm
+            private-node: '0'
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.21.0'
+      - if: matrix.manager == 'pnpm'
+        run: npm install --global pnpm@11.22.0
+      - if: matrix.manager == 'bun'
+        run: npm install --global bun@1.4.2
+      - name: Install from the public release
+        env:
+          T3_TODE_PACKAGE_MANAGER: ${{ matrix.manager }}
+          T3_TODE_NODE_DOWNLOAD: ${{ matrix.private-node }}
+        run: curl -fsSL https://raw.githubusercontent.com/Belweave/t3-tode/main/install.sh | bash
+      - run: ~/.local/bin/t3-tode --version && ~/.local/bin/t3-tode --doctor
+      - name: Check installed runtime
+        run: |
+          node -e 'const fs=require("fs"),path=require("path");const app=path.join(process.env.HOME,".local/share/t3-tode/app/current");const runtime=path.join(app,"node_modules/@zenbu-labs/pixel/electron/dist");if(!fs.existsSync(path.join(runtime,".zenbu-electron-sha256")))process.exit(1);'

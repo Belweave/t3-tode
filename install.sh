@@ -80,7 +80,7 @@ printf 'Installing locked dependencies with %s…\n' "$MANAGER"
   node node_modules/@zenbu-labs/pixel/scripts/postinstall.mjs
 )
 if [[ "$PLATFORM" == linux ]]; then
-  ELECTRON="$WORK/app/node_modules/@zenbu-labs/pixel/electron/dist/electron"
+  ELECTRON="$WORK/app/node_modules/@zenbu-labs/pixel/electron/dist/pixel"
   command -v ldd >/dev/null || fail 'Install libc-bin (ldd) and rerun the installer'
   if ldd "$ELECTRON" 2>&1 | grep -q 'not found'; then
     AUDIO=libasound2
