@@ -65,12 +65,23 @@ A fresh environment opens T3's normal onboarding. Install and authenticate at le
 
 ## SSH: log in, launch, work
 
-Install t3-tode on the target machine, then:
+Install t3-tode on the target machine. In the same SSH shell where you just ran the installer, load its PATH entry once:
+
+```sh
+. ~/.local/share/t3-tode/app/env
+t3-tode
+```
+
+Future SSH sessions load this automatically. You can also launch immediately using `~/.local/bin/t3-tode`. The installer runs in a child shell and cannot change the PATH of your already-open parent shell.
+
+For subsequent sessions:
 
 ```sh
 ssh user@host
 t3-tode
 ```
+
+On a new machine, `t3-tode` starts the backend, obtains a pairing credential, and opens the official onboarding interface in your SSH terminal. Do not run `t3` separately or open its localhost pairing URL on your laptop: that URL refers to the remote machine. Configure providers in the rendered T3 interface; provider CLI authentication must belong to the remote user. If a provider requires a browser, use that provider's supported device login or SSH authentication flow.
 
 Rendering runs on the remote machine; pixel frames and input travel through your existing SSH connection. No X forwarding, desktop session, browser port forwarding, or exposed backend port required. Linux without `DISPLAY` or `WAYLAND_DISPLAY` uses Pixel's headless Chromium platform. Each machine retains its own T3 environment and provider credentials.
 
@@ -149,6 +160,7 @@ Remove the `# t3-tode PATH` lines from your shell profiles. Your `~/.t3` backend
 
 ## Troubleshooting
 
+- **`t3-tode: command not found` after installation:** run `ls -l ~/.local/bin/t3-tode`. If it exists, run `. ~/.local/share/t3-tode/app/env` in your current shell, then `t3-tode`. If it is missing, the installation did not finish; rerun the installer and inspect the final error. Installing `t3` alone does not install t3-tode.
 - **Only an empty/new environment:** use the default command, not `--new-server`. Confirm the desktop/service uses the same `--state-dir` and user account.
 - **Version mismatch:** start the matching T3 app, install the matching `t3` CLI, or pass `--t3-command`. No database copying is needed.
 - **Profile already open:** quit the other client or use a separate `--profile`. After a crash, a stale `.t3-tode-lock` may remain; verify no client is using that profile before removing the named lock file. Stale locks are not automatically deleted while another process could be acquiring them.

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4
+
+- Load PATH from existing Bash login profiles and show the exact command needed in an already-open SSH shell.
+- Report failed installation explicitly, and prevent package installation from consuming the piped installer input.
+- Explain automatic T3 pairing and first-run onboarding over SSH.
+
 ## 0.1.3
 
 - Add `--with-t3` / `T3_TODE_INSTALL_T3=1` to install the official upstream T3 CLI when missing.

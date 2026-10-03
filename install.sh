@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # t3-tode user-local installer. No changes to T3 Code data or provider credentials.
-set -euo pipefail
-VERSION="${T3_TODE_VERSION:-v0.1.3}"
+set -Eeuo pipefail
+VERSION="${T3_TODE_VERSION:-v0.1.4}"
 NODE_VERSION="v24.21.0"
 REPOSITORY="Belweave/t3-tode"
 WITH_T3="${T3_TODE_INSTALL_T3:-0}"
@@ -28,8 +28,8 @@ apt_install() {
   command -v apt-get >/dev/null || fail "Install these system packages with your package manager: $*; then rerun the installer."
   command -v sudo >/dev/null || fail "Install these system packages as an administrator: $*; then rerun the installer."
   printf 'Installing required Linux system libraries (sudo may ask for your password)…\n'
-  sudo apt-get update -qq
-  sudo apt-get install -y "$@"
+  sudo apt-get update -qq </dev/null
+  sudo apt-get install -y "$@" </dev/null
 }
 if ! command -v unzip >/dev/null; then
   if [[ "$PLATFORM" == linux ]]; then apt_install unzip; else fail 'Install unzip first'; fi
@@ -40,6 +40,7 @@ BIN_DIR="${T3_TODE_BIN_DIR:-$HOME/.local/bin}"
 mkdir -p "$INSTALL_ROOT/releases" "$BIN_DIR"
 WORK=$(mktemp -d "$INSTALL_ROOT/releases/.install-XXXXXX")
 trap 'rm -rf "$WORK"' EXIT
+trap 'STATUS=$?; printf "\nt3-tode installation failed (exit %s) at line %s. T3 Code may have installed separately; rerun this installer after resolving the error above.\n" "$STATUS" "$LINENO" >&2; exit "$STATUS"' ERR
 if [[ "$WITH_T3" == 1 ]]; then
   T3_BIN="${T3CODE_INSTALL_BIN_DIR:-$HOME/.local/bin}"
   [[ "$T3_BIN" == /* ]] || fail 'T3CODE_INSTALL_BIN_DIR must be an absolute path'
@@ -132,19 +133,23 @@ LAUNCHER="$WORK/t3-tode"
 printf '#!/usr/bin/env bash\nset -e\nAPP=%s/current\nexport PATH="$APP/runtime/bin:$PATH"\nexec "$APP/runtime/bin/node" "$APP/bin/t3-tode.mjs" "$@"\n' "$QUOTED_ROOT" > "$LAUNCHER"
 chmod 755 "$LAUNCHER"
 mv -f "$LAUNCHER" "$BIN_DIR/t3-tode"
-"$BIN_DIR/t3-tode" --doctor
 # Persist PATH for common login and interactive shells, without duplicating entries.
 # PATH expands when the shell sources this file.
 # shellcheck disable=SC2016
 printf 'export PATH=%q:"$PATH"\n' "${BIN_DIR}${T3_PATH:+:$T3_PATH}" > "$INSTALL_ROOT/env"
 printf -v SOURCE_LINE '. %q/env # t3-tode PATH' "$INSTALL_ROOT"
 if [[ "${T3_TODE_NO_MODIFY_PATH:-0}" != 1 ]]; then
-  for PROFILE in "$HOME/.profile" "$HOME/.bashrc" "$HOME/.zshrc"; do
+  PROFILES=("$HOME/.profile" "$HOME/.bashrc" "$HOME/.zshrc")
+  # Bash reads the first existing login file, which may bypass .profile.
+  for PROFILE in "$HOME/.bash_profile" "$HOME/.bash_login"; do
+    if [[ -f "$PROFILE" ]]; then PROFILES+=("$PROFILE"); fi
+  done
+  for PROFILE in "${PROFILES[@]}"; do
     if ! grep -Fq "$SOURCE_LINE" "$PROFILE" 2>/dev/null; then printf '\n%s\n' "$SOURCE_LINE" >> "$PROFILE"; fi
   done
 fi
-printf '\nInstalled. Start with: %s/t3-tode\n' "$BIN_DIR"
-# Print a literal PATH instruction.
-# shellcheck disable=SC2016
-case ":$PATH:" in *":$BIN_DIR:"*) ;; *) printf 'Add this to your shell profile, then open a new terminal:\n  export PATH="%s:$PATH"\n' "$BIN_DIR" ;; esac
-printf 'Use Ghostty, Kitty, or cmux. Ctrl+Q quits. Run the same installer to update.\n'
+"$BIN_DIR/t3-tode" --doctor
+printf '\nInstalled. Launch now in this SSH session:\n  %s/t3-tode\n' "$BIN_DIR"
+printf 'To enable the short command in this already-open shell, run:\n  %s\n  t3-tode\n' "$SOURCE_LINE"
+printf 'Future SSH sessions load PATH automatically. No separate t3 launch or browser pairing is required.\n'
+printf 'Use Ghostty, Kitty, or cmux on your local machine. Ctrl+Q quits. Run the same installer to update.\n'

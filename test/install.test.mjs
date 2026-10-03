@@ -33,13 +33,16 @@ test('installer handles spaces, atomically updates, and preserves installation o
     for (const manager of ['npm','pnpm','bun']) fs.writeFileSync(path.join(mocks,manager),'#!/bin/sh\nprintf "%s\\n" "$0 $*" >> "$FIXTURE_MANAGER_LOG"\nexit 0\n',{mode:0o755});
     const install=path.join(home,'app with spaces');const bin=path.join(home,'bin with spaces');
     const env={...process.env,HOME:home,PATH:`${mocks}:${process.env.PATH}`,FIXTURE_DOWNLOADS:downloads,T3_TODE_INSTALL_DIR:install,T3_TODE_BIN_DIR:bin,T3_TODE_VERSION:'v0.1.0',T3_TODE_PACKAGE_MANAGER:'npm',T3_TODE_NODE_DOWNLOAD:'1',FIXTURE_MANAGER_LOG:path.join(home,'manager.log')};
+    fs.writeFileSync(path.join(home,'.bash_profile'),'# Existing login profile\n');
     const run=(args=[])=>spawnSync('bash',['install.sh',...args],{env,encoding:'utf8'});
     let result=run();assert.equal(result.status,0,result.stderr);
+    assert.match(result.stdout,/already-open shell/);
+    assert.match(execFileSync('bash',['--login','-c','command -v t3-tode'],{env:{...env,PATH:'/usr/bin:/bin'},encoding:'utf8'}),/bin with spaces/);
     const first=fs.readlinkSync(path.join(install,'current'));
     assert.match(execFileSync(path.join(bin,'t3-tode'),['--doctor'],{encoding:'utf8'}),/fixture doctor OK/);
     result=run();assert.equal(result.status,0,result.stderr);
     assert.notEqual(fs.readlinkSync(path.join(install,'current')),first);
-    for (const profile of ['.profile','.bashrc','.zshrc']) assert.equal(fs.readFileSync(path.join(home,profile),'utf8').split('t3-tode PATH').length-1,1);
+    for (const profile of ['.profile','.bashrc','.zshrc','.bash_profile']) assert.equal(fs.readFileSync(path.join(home,profile),'utf8').split('t3-tode PATH').length-1,1);
     for (const manager of ['pnpm','bun']) {
       env.T3_TODE_PACKAGE_MANAGER=manager;env.T3_TODE_NODE_DOWNLOAD='0';
       result=run();assert.equal(result.status,0,result.stderr);
