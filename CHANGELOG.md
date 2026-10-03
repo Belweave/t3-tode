@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+
+- Canonicalize the imported npm lock before Bun's frozen installation, fixing fresh Linux installs with Bun.
+- Report the actual installed application version from package metadata.
+- Public installation checks cover npm, pnpm, Bun, Node reuse, and private Node fallback.
+
 ## 0.1.0
 
 First public release.

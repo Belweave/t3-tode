@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # t3-tode user-local installer. No changes to T3 Code data or provider credentials.
 set -euo pipefail
-VERSION="${T3_TODE_VERSION:-v0.1.0}"
+VERSION="${T3_TODE_VERSION:-v0.1.1}"
 NODE_VERSION="v24.21.0"
 REPOSITORY="Belweave/t3-tode"
 fail() { printf 't3-tode: %s\n' "$*" >&2; exit 1; }
@@ -74,7 +74,10 @@ printf 'Installing locked dependencies with %s…\n' "$MANAGER"
   case "$MANAGER" in
     npm) "$MANAGER_BIN" ci --ignore-scripts --omit=dev --no-audit --no-fund ;;
     pnpm) "$MANAGER_BIN" import && "$MANAGER_BIN" install --frozen-lockfile --prod --ignore-scripts ;;
-    bun) "$MANAGER_BIN" install --frozen-lockfile --production --ignore-scripts ;;
+    bun)
+      # Canonicalize npm's bundled dependency records before freezing the Bun lock.
+      "$MANAGER_BIN" install --lockfile-only --ignore-scripts --os='*' --cpu='*'
+      "$MANAGER_BIN" install --frozen-lockfile --production --ignore-scripts ;;
   esac
   # Run only the required, pinned Pixel runtime setup regardless of manager policy.
   node scripts/ensure-backend.mjs

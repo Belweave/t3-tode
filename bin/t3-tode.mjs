@@ -32,7 +32,7 @@ The complete upstream web client runs against the upstream T3 backend.
 async function main() {
   const options = parseOptions(process.argv.slice(2));
   if (options.help || options.h) {console.log(help); return;}
-  if (options.version) {console.log('t3-tode 0.1.0'); return;}
+  if (options.version) {console.log(`t3-tode ${JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8')).version}`); return;}
   const pixelRoot = path.dirname(require.resolve('@zenbu-labs/pixel/package.json'));
   if (options.doctor) {
     const dist = path.join(pixelRoot,'electron','dist');

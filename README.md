@@ -109,7 +109,7 @@ Rerun the install command to update. It retains prior application versions and l
 
 ```sh
 # Pin a release; these variables are passed to bash, not curl.
-curl -fsSL https://raw.githubusercontent.com/Belweave/t3-tode/main/install.sh | T3_TODE_VERSION=v0.1.0 bash
+curl -fsSL https://raw.githubusercontent.com/Belweave/t3-tode/main/install.sh | T3_TODE_VERSION=v0.1.1 bash
 ```
 
 Choose your package manager explicitly (auto-detection prefers an existing npm, then pnpm, then Bun):

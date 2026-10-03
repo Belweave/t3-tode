@@ -32,7 +32,7 @@ test('installer handles spaces, atomically updates, and preserves installation o
     fs.writeFileSync(path.join(mocks,'curl'),'#!/bin/sh\nwhile [ "$#" -gt 0 ]; do case "$1" in https://*) url="$1";; -o) shift; dest="$1";; esac; shift; done\ncp "$FIXTURE_DOWNLOADS/${url##*/}" "$dest"\n',{mode:0o755});
     for (const manager of ['npm','pnpm','bun']) fs.writeFileSync(path.join(mocks,manager),'#!/bin/sh\nprintf "%s\\n" "$0 $*" >> "$FIXTURE_MANAGER_LOG"\nexit 0\n',{mode:0o755});
     const install=path.join(home,'app with spaces');const bin=path.join(home,'bin with spaces');
-    const env={...process.env,HOME:home,PATH:`${mocks}:${process.env.PATH}`,FIXTURE_DOWNLOADS:downloads,T3_TODE_INSTALL_DIR:install,T3_TODE_BIN_DIR:bin,T3_TODE_PACKAGE_MANAGER:'npm',T3_TODE_NODE_DOWNLOAD:'1',FIXTURE_MANAGER_LOG:path.join(home,'manager.log')};
+    const env={...process.env,HOME:home,PATH:`${mocks}:${process.env.PATH}`,FIXTURE_DOWNLOADS:downloads,T3_TODE_INSTALL_DIR:install,T3_TODE_BIN_DIR:bin,T3_TODE_VERSION:'v0.1.0',T3_TODE_PACKAGE_MANAGER:'npm',T3_TODE_NODE_DOWNLOAD:'1',FIXTURE_MANAGER_LOG:path.join(home,'manager.log')};
     const run=()=>spawnSync('bash',['install.sh'],{env,encoding:'utf8'});
     let result=run();assert.equal(result.status,0,result.stderr);
     const first=fs.readlinkSync(path.join(install,'current'));
