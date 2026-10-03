@@ -14,7 +14,10 @@ test('installer handles spaces, atomically updates, and preserves installation o
     const app=path.join(home,'t3-tode');fs.mkdirSync(path.join(app,'bin'),{recursive:true});
     fs.writeFileSync(path.join(app,'bin','t3-tode.mjs'),'console.log("fixture doctor OK");');
     fs.mkdirSync(path.join(app,'node_modules','@zenbu-labs','pixel','scripts'),{recursive:true});
-    fs.writeFileSync(path.join(app,'node_modules','@zenbu-labs','pixel','scripts','postinstall.mjs'),'// fixture runtime installation');
+    fs.writeFileSync(path.join(app,'node_modules','@zenbu-labs','pixel','scripts','postinstall.mjs'),`import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+if (fs.statSync(os.tmpdir()).dev !== fs.statSync(process.cwd()).dev || fs.realpathSync(path.dirname(os.tmpdir())) !== fs.realpathSync(process.cwd())) throw new Error('Pixel extraction must use installation filesystem');`);
     fs.mkdirSync(path.join(app,'scripts'));
     fs.writeFileSync(path.join(app,'scripts','ensure-backend.mjs'),'// fixture backend installation');
     const asset='t3-tode-v0.1.0.tar.gz';

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # t3-tode user-local installer. No changes to T3 Code data or provider credentials.
-set -Eeuo pipefail
-VERSION="${T3_TODE_VERSION:-v0.1.4}"
+set -euo pipefail
+VERSION="${T3_TODE_VERSION:-v0.1.5}"
 NODE_VERSION="v24.21.0"
 REPOSITORY="Belweave/t3-tode"
 WITH_T3="${T3_TODE_INSTALL_T3:-0}"
@@ -108,7 +108,11 @@ printf 'Installing locked dependencies with %s…\n' "$MANAGER"
   esac
   # Run only the required, pinned Pixel runtime setup regardless of manager policy.
   node scripts/ensure-backend.mjs
-  node node_modules/@zenbu-labs/pixel/scripts/postinstall.mjs
+  # Pixel renames its extracted runtime into node_modules. /tmp may be a
+  # separate tmpfs or disk, so keep extraction on the destination filesystem.
+  mkdir -p "$WORK/app/.pixel-tmp"
+  TMPDIR="$WORK/app/.pixel-tmp" TMP="$WORK/app/.pixel-tmp" TEMP="$WORK/app/.pixel-tmp" node node_modules/@zenbu-labs/pixel/scripts/postinstall.mjs
+  rmdir "$WORK/app/.pixel-tmp"
 )
 if [[ "$PLATFORM" == linux ]]; then
   ELECTRON="$WORK/app/node_modules/@zenbu-labs/pixel/electron/dist/pixel"

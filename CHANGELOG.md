@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5
+
+- Extract Pixel on the installation filesystem, fixing EXDEV failures when `/tmp` and the home directory use different mounts.
+- Print installation failure diagnostics once.
+
 ## 0.1.4
 
 - Load PATH from existing Bash login profiles and show the exact command needed in an already-open SSH shell.

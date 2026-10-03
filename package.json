@@ -1,6 +1,6 @@
 {
   "name": "t3-tode",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "The real T3 Code client, rendered at pixel resolution in your terminal",
   "type": "module",
   "bin": {
