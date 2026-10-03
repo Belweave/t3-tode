@@ -1,0 +1,22 @@
+name: Bug report
+description: Report a launch, rendering, or connection problem.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include steps to reproduce and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, architecture, terminal/version, local or SSH, and t3-tode --doctor output. Redact personal paths and secrets.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output
+      description: Remove pairing tokens, provider credentials, private messages, and personal information.

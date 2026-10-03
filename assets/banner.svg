@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">t3-tode</title>
+  <desc id="desc">The real T3 Code, in your terminal. SSH into your machine and run t3-tode.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0c1022"/><stop offset="1" stop-color="#101017"/></linearGradient>
+    <linearGradient id="accent"><stop stop-color="#6f8aff"/><stop offset="1" stop-color="#b696ff"/></linearGradient>
+  </defs>
+  <rect width="1200" height="360" rx="24" fill="url(#bg)"/>
+  <rect x="40" y="40" width="6" height="280" rx="3" fill="url(#accent)"/>
+  <text x="76" y="132" font-family="system-ui,sans-serif" font-size="68" font-weight="700" fill="#fafafa">t3-tode</text>
+  <text x="78" y="186" font-family="system-ui,sans-serif" font-size="25" fill="#aeb6cc">The real T3 Code. In your terminal.</text>
+  <text x="78" y="270" font-family="system-ui,sans-serif" font-size="17" fill="#8791aa">PIXEL RESOLUTION · EXISTING THREADS · SSH</text>
+  <rect x="660" y="80" width="474" height="200" rx="14" fill="#080c14" stroke="#303b55"/>
+  <path d="M660 122h474" stroke="#303b55"/>
+  <circle cx="682" cy="101" r="5" fill="#ff6767"/><circle cx="701" cy="101" r="5" fill="#ffd16b"/><circle cx="720" cy="101" r="5" fill="#6ddd9a"/>
+  <text x="688" y="178" font-family="ui-monospace,monospace" font-size="23" fill="#aeb6cc">$ ssh user@host</text>
+  <text x="688" y="224" font-family="ui-monospace,monospace" font-size="23" fill="#9cafef">$ t3-tode</text>
+  <rect x="824" y="206" width="12" height="23" fill="#9cafef"/>
+</svg>

@@ -1,0 +1,49 @@
+{
+  "name": "t3-tode",
+  "version": "0.1.0",
+  "description": "The real T3 Code client, rendered at pixel resolution in your terminal",
+  "type": "module",
+  "bin": {
+    "t3-tode": "bin/t3-tode.mjs"
+  },
+  "scripts": {
+    "start": "node bin/t3-tode.mjs",
+    "test": "node --test test/*.test.mjs",
+    "doctor": "node bin/t3-tode.mjs --doctor",
+    "release:pack": "node scripts/package-release.mjs"
+  },
+  "dependencies": {
+    "@zenbu-labs/pixel": "0.0.23",
+    "react": "^18.3.1",
+    "t3": "0.0.45"
+  },
+  "engines": {
+    "node": "^22.16 || ^23.11 || >=24.10"
+  },
+  "license": "MIT",
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Belweave/t3-tode.git"
+  },
+  "homepage": "https://github.com/Belweave/t3-tode#readme",
+  "bugs": {
+    "url": "https://github.com/Belweave/t3-tode/issues"
+  },
+  "author": "Belweave",
+  "keywords": [
+    "t3-code",
+    "terminal",
+    "tui",
+    "ssh",
+    "kitty",
+    "ghostty",
+    "ai",
+    "coding"
+  ]
+}

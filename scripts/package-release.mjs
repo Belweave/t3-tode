@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {gzipSync} from 'node:zlib';
+const version=JSON.parse(fs.readFileSync('package.json','utf8')).version;
+if (execFileSync('git',['status','--porcelain','--untracked-files=no'],{encoding:'utf8'}).trim()) throw new Error('Commit changes before packaging a release');
+fs.mkdirSync('dist',{recursive:true});
+const asset=`t3-tode-v${version}.tar.gz`;
+const archive=execFileSync('git',['archive','--format=tar','--prefix=t3-tode/','HEAD'],{maxBuffer:32*1024*1024});
+const bytes=gzipSync(archive,{level:9});
+fs.writeFileSync(path.join('dist',asset),bytes);
+fs.writeFileSync('dist/SHA256SUMS',`${createHash('sha256').update(bytes).digest('hex')}  ${asset}\n`);
+console.log(`dist/${asset}\ndist/SHA256SUMS`);
